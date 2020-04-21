@@ -25,7 +25,7 @@ def set_user_data(username, project_name):
 
 def set_details_from_headers(headers):
     """Setup user details from headers"""
-    return set_user_data(headers['VER_USER'], headers['VER_PROJECT'])
+    return set_user_data(headers['LABELIT_USER'], headers['LABELIT_PROJECT'])
 
 # Labeling home for Labelit
 @app.route('/labelit')
