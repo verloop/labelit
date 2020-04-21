@@ -1,0 +1,30 @@
+<html>
+<head>
+  <title>List Projects</title>
+  <link rel="stylesheet" href="/static/custom_table.css" />
+  <script src="/static/js/jquery.min.js"></script>
+</head>
+<body>
+
+  <div class="container">
+  	<div class="table">
+  		<div class="table-header">
+  			<div class="header__item"><a id="name" class="filter__link" href="#">Project</a></div>
+  			<div class="header__item"><a id="wins" class="filter__link filter__link--number" href="#">Manager</a></div>
+  			<div class="header__item"><a id="draws" class="filter__link filter__link--number" href="#">Task UI</a></div>
+  			<div class="header__item"><a id="losses" class="filter__link filter__link--number" href="#">Labeling UI</a></div>
+  		</div>
+  		<div class="table-content">
+        {% for project in projects %}
+  			<div class="table-row">
+  				<div class="table-data">{{ project.name }}</div>
+  				<div class="table-data">{{ project.manager.username }}</div>
+  				<div class="table-data"><a href="/label/{{ project.name }}/labelit-tasks">Link</a></div>
+  				<div class="table-data"><a href="/label/{{ project.name }}/labelit">Link</a></div>
+  			</div>
+  		  {% endfor %}
+  		</div>
+  	</div>
+  </div>
+</body>
+</html>
