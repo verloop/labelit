@@ -16,7 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-
+# Setup logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -31,13 +31,17 @@ LOGGING = {
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lh)pe29^)qrsh6cq3lg9h!o-!_0&k7()m_chku!ph%@#f6av1i'
+# You need to generate secret key and set it as environment variable
+# Secret key can be generated either using https://gist.github.com/ndarville/3452907
+# or https://djecrety.ir/
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Login URL for the website
 LOGIN_URL='/admin/login/'
 # Application definition
 
