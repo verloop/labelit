@@ -20,7 +20,8 @@ Note : Labelit is still in it's initial development phase and not intended for p
 7. Go back to Labelit : `cd ..`
 8. Install requirements for Labelit : `pip install -r requirements.txt`
 9. Enter Django app directory : `cd labelit`
-10. Create`mkdir projects; mkdir tmp`
+10. Create temp directories : `mkdir projects; mkdir tmp`
+11. Set secret key for Django as Environment variable (You can generate secret key using https://gist.github.com/ndarville/3452907 or https://djecrety.ir): `export DJANGO_SECRET_KEY=<generated_key>`
 11. Perform database migration (By default, it uses local SQLite database. If you want to connect to another database, check Django documentation) : `python manage.py migrate`
 12. Create admin user : `python manage.py createsuperuser`
 13. Run the development server : `python manage.py runserver --noreload`
