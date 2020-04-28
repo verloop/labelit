@@ -100,7 +100,7 @@ def labelit_tasks_page():
 
 
 def main():
-    """Runs label studio server using given config.""""
+    """Runs label studio server using given config."""
     global input_args
 
     input_args = parse_input_args()
