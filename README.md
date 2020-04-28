@@ -3,7 +3,7 @@
 ## Description
 Labelit is a data labelling platform based on open source tool [Label Studio](https://labelstud.io/). We want to help small teams (having 3 to 5 annotators) who use [Label Studio](https://labelstud.io/) to manage multiple projects. We run a [Label Studio](https://labelstud.io/) server for each project in multi-session mode to make it work for multiple users. So, if you have N projects, there will be N Label Studio servers running. Labelit then helps to route request to each of these servers based on project ID by using reverse-proxy technique.
 
-Note : Labelit is still in it's initial development phase and not intended for production use. 
+> **Note** : Labelit is still in it's initial development phase and not intended for production use. 
 
 ## Features
 - Create and manage multiple data labelling projects.
@@ -20,8 +20,8 @@ Note : Labelit is still in it's initial development phase and not intended for p
 7. Go back to Labelit : `cd ..`
 8. Install requirements for Labelit : `pip install -r requirements.txt`
 9. Enter Django app directory : `cd labelit`
-10. Create temp directories : `mkdir projects; mkdir tmp`
-11. Set secret key for Django as Environment variable (You can generate secret key using https://gist.github.com/ndarville/3452907 or https://djecrety.ir): `export DJANGO_SECRET_KEY=<generated_key>`
+10. Create temp directories : `mkdir projects tmp data`
+11. Set secret key for Django as Environment variable (You can generate secret key using https://gist.github.com/ndarville/3452907 or https://djecrety.ir): `export DJANGO_SECRET_KEY="<generated_key>"`
 11. Perform database migration (By default, it uses local SQLite database. If you want to connect to another database, check Django documentation) : `python manage.py migrate`
 12. Create admin user : `python manage.py createsuperuser`
 13. Run the development server : `python manage.py runserver --noreload`
@@ -31,7 +31,7 @@ After you perform development setup, you can use Labelit as follows:
 1. Go to `http://127.0.0.1:8000/admin`
 2. Click on `Projects` and then `Create Project`
 3. Give a project name (without space)
-4. Give path to your dataset (supports text files now). (eg. `dataset-text.txt`)
+4. Give path to your dataset (supports text files now). (eg. `data/dataset-text.txt`)
 5. In the Config field, give your Label Studio's XML config. You can test the config first on [Label Studio Playground](https://labelstud.io/playground/).
 6. Set yourself as Manager, leave all other fields empty
 7. Click on save
