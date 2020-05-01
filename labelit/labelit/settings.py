@@ -142,3 +142,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "flaskapp/static"),
     find_dir('static'),
 ]
+
+LOGIN_REDIRECT_URL = '/projects/list'
+LOGOUT_REDIRECT_URL = '/projects/list'

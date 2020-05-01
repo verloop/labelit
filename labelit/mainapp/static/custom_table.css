@@ -4,7 +4,6 @@
 }
 
 body {
-  padding: 24px;
   font-family: 'Source Sans Pro', sans-serif;
   margin: 0;
 }
@@ -75,4 +74,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 .filter__link.asc::after {
   content: '(asc)';
+}
+
+.navbar-nav > li{
+  padding-left:30px;
+  padding-right:30px;
 }
