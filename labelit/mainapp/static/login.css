@@ -31,3 +31,10 @@ button:hover {
 .container {
     padding: 16px;
   }
+
+  #auth {
+    padding-top: 50px;
+    text-align: center;
+    text-transform: capitalize;
+    font-size: xx-large;
+  }

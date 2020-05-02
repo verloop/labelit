@@ -1,19 +1,23 @@
 {% extends "base.html" %}
 {% load static %}
 {% block extrahead %}
-<link rel="stylesheet" href="../../static/login.css">
+<link rel="stylesheet" href="{% static 'login.css' %}">
 {% endblock %}
 
 
 {% block content %}
-<div class="w3-container w3-teal">
- 
+{% if user.is_authenticated %}
+<div class="container" id="auth">
+    Hi {{ user }} !
+{% else %}
+<div class="container">
   <form class="form-signin" action="{% url 'login' %}" method="post" id="login-form">{% csrf_token %}
     <input type="text" name="username" id="id_username" class="form-control" placeholder="User Name" required autofocus>
     <input type="password" name="password" id="id_password" class="form-control" placeholder="Password" required>
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
   </form>
-
 </div>
+{% endif %}
+
 {% endblock %}
 
