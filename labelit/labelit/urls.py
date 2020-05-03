@@ -18,7 +18,6 @@ from django.urls import path, include
 from mainapp.views import LSProxyView, projects_list
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
