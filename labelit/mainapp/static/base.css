@@ -1,4 +1,4 @@
-.navbar-nav > li{
+#navbar-base > li{
   padding-left:30px;
   padding-right:30px;
   place-items: horizontal;

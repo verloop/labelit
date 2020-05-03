@@ -130,3 +130,8 @@ dmypy.json
 
 # VSCode Settings
 .vscode
+
+# Test Files -
+data/
+projects/
+tmp/

@@ -32,7 +32,7 @@ class LSProxyView(ProxyView):
         logger.debug(f"Calling {self._upstream}")
         return super().dispatch(request, *args, **kwargs)
 
-@login_required()
+@login_required
 def projects_list(request):
     """List all projects"""
     projects = Project.objects.all()
