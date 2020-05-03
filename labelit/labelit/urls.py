@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from mainapp.views import LSProxyView, projects_list
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/<str:path>', login_required(LSProxyView.as_view()), {'path': ''}, name='LSAPIView'),
     path('label/<str:project>', login_required(LSProxyView.as_view()), {'path': ''}, name='LSHomeView'),
     path('label/<str:project>/<path:path>', login_required(LSProxyView.as_view()), name='LSView'),
+    path('', include('django.contrib.auth.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

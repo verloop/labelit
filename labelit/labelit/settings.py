@@ -131,6 +131,7 @@ USE_L10N = True
 USE_TZ = True
 
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
@@ -140,5 +141,10 @@ from label_studio.utils.io import find_dir
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     os.path.join(BASE_DIR, "flaskapp/static"),
+    os.path.join(BASE_DIR, "mainapp/static"),
     find_dir('static'),
 ]
+
+LOGIN_REDIRECT_URL = '/projects/list'
+LOGOUT_REDIRECT_URL = '/login'
+LOGIN_URL = '/login'
