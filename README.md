@@ -3,7 +3,7 @@
 ## Description
 Labelit is a data labelling platform based on open source tool [Label Studio](https://labelstud.io/). We want to help small teams (having 3 to 5 annotators) who use [Label Studio](https://labelstud.io/) to manage multiple projects. We run a [Label Studio](https://labelstud.io/) server for each project in multi-session mode to make it work for multiple users. So, if you have N projects, there will be N Label Studio servers running. Labelit then helps to route request to each of these servers based on project ID by using reverse-proxy technique.
 
-> **Note** : Labelit is still in it's initial development phase and not intended for production use. 
+> **Note** : Labelit is still in it's initial development phase and not intended for production use.
 
 ## Features
 - Create and manage multiple data labelling projects.
@@ -27,10 +27,11 @@ After you perform development setup, you can use Labelit as follows:
 1. Go to `http://127.0.0.1:8000/admin`
 2. Click on `Projects` and then `Create Project`
 3. Give a project name (without space)
-4. Give path to your dataset (supports text files now). (eg. `data/dataset-text.txt`)
-5. In the Config field, give your Label Studio's XML config. You can test the config first on [Label Studio Playground](https://labelstud.io/playground/).
-6. Set yourself as Manager, leave all other fields empty
-7. Click on save
+4. Give dataset type (this is Label Studio dataset format, eg. `text-dir`)
+5. Give absolute path to your dataset
+6. In the Config field, give your Label Studio's XML config. You can test the config first on [Label Studio Playground](https://labelstud.io/playground/).
+7. Set yourself as Manager, leave all other fields empty
+8. Click on save
 
 You can list projects at `http://127.0.0.1:8000/projects/list`.  
 Also, you can go to `http://127.0.0.1:8000/label/<project_name>/labelit` for labeling page and `http://127.0.0.1:8000/label/<project_name>/labelit-tasks` for tasks page
