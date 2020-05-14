@@ -14,17 +14,13 @@ Labelit is a data labelling platform based on open source tool [Label Studio](ht
 1. Clone the repo : `git clone git@github.com:verloop/labelit.git; cd labelit`
 2. Create a conda environment (recommended) : `conda create -n label-studio python=3.7`
 3. Switch to conda env (recommended) : `conda activate label-studio`
-4. Clone Label Studio [repo](https://github.com/heartexlabs/label-studio) (There was a bug in Label Studio's code that was fixed recently hence its not there in the release) : `git clone git@github.com:heartexlabs/label-studio.git`
-5. Enter Label Studio directory : `cd label-studio`
-6. Install Label Studio : `python setup.py install`
-7. Go back to Labelit : `cd ..`
-8. Install requirements for Labelit : `pip install -r requirements.txt`
-9. Enter Django app directory : `cd labelit`
-10. Create temp directories : `mkdir projects tmp data`
-11. Set secret key for Django as Environment variable (You can generate secret key using https://gist.github.com/ndarville/3452907 or https://djecrety.ir): `export DJANGO_SECRET_KEY="<generated_key>"`
-11. Perform database migration (By default, it uses local SQLite database. If you want to connect to another database, check Django documentation) : `python manage.py migrate`
-12. Create admin user : `python manage.py createsuperuser`
-13. Run the development server : `python manage.py runserver --noreload`
+4. Install requirements for Labelit : `pip install -r requirements.txt`
+5. Enter Django app directory : `cd labelit`
+6. Create temp directories : `mkdir projects tmp data`
+7. Set secret key for Django as Environment variable (You can generate secret key using https://gist.github.com/ndarville/3452907 or https://djecrety.ir): `export DJANGO_SECRET_KEY="<generated_key>"`
+8. Perform database migration (By default, it uses local SQLite database. If you want to connect to another database, check Django documentation) : `python manage.py migrate`
+9. Create admin user : `python manage.py createsuperuser`
+10. Run the development server : `python manage.py runserver --noreload`
 
 ## How to use
 After you perform development setup, you can use Labelit as follows:
