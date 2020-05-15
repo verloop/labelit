@@ -8,7 +8,6 @@ class MainappConfig(AppConfig):
 
     def ready(self):
         if ('labelit.wsgi' not in sys.argv and 'runserver' not in sys.argv):
-            print(sys.argv)
             return True
         # you must import your modules here
         # to avoid AppRegistryNotReady exception
