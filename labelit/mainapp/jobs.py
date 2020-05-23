@@ -109,7 +109,7 @@ def export_projects():
                 annotator_dir = LABELIT_DIRS['projects'] / annotator.username / project.name
                 label_config_file = annotator_dir / 'config.xml'
                 if label_config_file.exists():
-                    c = Converter(label_config_file)
+                    c = Converter(str(label_config_file))
                     completions_dir = annotator_dir / 'completions/'
                     output_path = LABELIT_DIRS['exports'] / project.name / annotator.username
                     logger.debug(f"Exporting completions for annotator {annotator.username}, project {project.name}")
