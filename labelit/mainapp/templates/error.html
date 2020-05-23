@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  {% for error in errors %}
+  <div class="container">
+    <div>{{error.message}}</div>
+  </div>
+  {% endfor %}
+{% endblock %}
