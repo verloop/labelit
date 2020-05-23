@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from labelit.settings import BASE_DIR
 from label_studio.utils.misc import parse_config
 import os
+from pathlib import Path
 
 from .storage.utils import get_storage_type
 
@@ -15,6 +16,10 @@ def validate_dataset_path(value):
     """Validates the path for input dataset"""
     try:
         storage_type = get_storage_type(value)
+        if storage_type == 'local':
+            dataset_path = Path(value)
+            if not dataset_path.is_dir():
+                raise Exception("Directory doesn't exist")
     except:
         raise ValidationError(
             _('Enter a valid storage path!'),
