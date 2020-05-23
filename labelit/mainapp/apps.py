@@ -9,8 +9,12 @@ class MainappConfig(AppConfig):
     def ready(self):
         if ('labelit.wsgi' not in sys.argv and 'runserver' not in sys.argv):
             return True
-        # you must import your modules here
-        # to avoid AppRegistryNotReady exception
-        from .models import startup_run
+        # Import modules
+        from .jobs import scheduler, manage_project_servers, export_projects
         # Start all projects
-        startup_run()
+        manage_project_servers()
+        # Add jobs to scheduler
+        scheduler.add_job(manage_project_servers, 'interval', seconds=150)
+        scheduler.add_job(export_projects, 'interval', seconds=300)
+        # Start scheduler
+        scheduler.start()
