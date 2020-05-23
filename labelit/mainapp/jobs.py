@@ -1,10 +1,10 @@
-import psutil, os, logging
+import psutil, logging
 
 from label_studio_converter import Converter
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from django.core.cache import cache
-from labelit.settings import LABELIT_CONFIG_DIR, LABELIT_PROJECTS_DIR, LABELIT_EXPORT_DIR, LABELIT_TEMP_DIR
+from labelit.settings import LABELIT_DIRS
 from .models import Project, ProjectAnnotators
 from .utils import get_random_port, save_config_file, get_label_studio_cmd, start_tool_server
 from .storage.utils import get_storage_type
@@ -58,7 +58,7 @@ def manage_project_servers():
                 if project_storage_path_type == 'local':
                     project_local_storage = project.dataset_path
                 else:
-                    project_local_storage = os.path.join(LABELIT_TEMP_DIR, project.name)
+                    project_local_storage = LABELIT_DIRS['temp'] / project.name
                 if project.status == Project.Status.INITIALIZED:
                     label_config_file = save_config_file(project.name, project.config)
                     try:
@@ -72,7 +72,7 @@ def manage_project_servers():
                         # Go to next project
                         continue
                 else:
-                    label_config_file = os.path.join(LABELIT_CONFIG_DIR, project.name)
+                    label_config_file = LABELIT_DIRS['configs'] / project.name
                 command = get_label_studio_cmd(
                             project_local_storage,
                             project.dataset_format,
@@ -106,12 +106,12 @@ def export_projects():
             project_annotators = ProjectAnnotators.objects.filter(project=project)
             for project_annotator in project_annotators:
                 annotator = project_annotator.annotator
-                annotator_dir = os.path.join(LABELIT_PROJECTS_DIR, annotator.username, project.name)
-                label_config_file = os.path.join(annotator_dir, 'config.xml')
-                if os.path.exists(label_config_file):
+                annotator_dir = LABELIT_DIRS['projects'] / annotator.username / project.name
+                label_config_file = annotator_dir / 'config.xml'
+                if label_config_file.exists():
                     c = Converter(label_config_file)
-                    completions_dir = os.path.join(annotator_dir, 'completions/')
-                    output_path = os.path.join(LABELIT_EXPORT_DIR, project.name, annotator.username)
+                    completions_dir = annotator_dir / 'completions/'
+                    output_path = LABELIT_DIRS['exports'] / project.name / annotator.username
                     logger.debug(f"Exporting completions for annotator {annotator.username}, project {project.name}")
                     if project.export_format == Project.ExportFormat.JSON:
                         c.convert_to_json(completions_dir, output_path)

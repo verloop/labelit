@@ -11,16 +11,22 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from pathlib import Path
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# Build paths inside the project using BASE_DIR
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-LABELIT_PROJECTS_DIR = os.path.join(BASE_DIR, 'projects')
-LABELIT_CONFIG_DIR = os.path.join(BASE_DIR, 'config')
-LABELIT_EXPORT_DIR = os.path.join(BASE_DIR, 'exports')
-LABELIT_TEMP_DIR = os.path.join(BASE_DIR, 'tmp')
+BASE_DIR_PATH = Path(__file__).resolve(strict=True).parent.parent
 
+LABELIT_DIRS = {
+    'projects': BASE_DIR_PATH / 'projects',
+    'configs': BASE_DIR_PATH / 'config',
+    'exports': BASE_DIR_PATH / 'exports',
+    'temp': BASE_DIR_PATH / 'tmp',
+}
 # Create dirs if it doesnt exist
+for dir_type in LABELIT_DIRS:
+    LABELIT_DIRS[dir_type].mkdir(parents=True, exist_ok=True)
 
 # Setup logging
 LOGGING = {
