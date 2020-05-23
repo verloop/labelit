@@ -1,13 +1,12 @@
+import os, logging
+
 from django.shortcuts import render
 from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
 from revproxy.views import ProxyView
 from mainapp.models import Project
 
-import os
-import logging
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
 class LSProxyView(ProxyView):
@@ -39,10 +38,12 @@ class LSProxyView(ProxyView):
             if project_cache['fail_flag']:
                 error = {'message': 'Failure while loading project, contact admin.'}
                 return render(request, 'error.html', {'errors' : [error]})
+            # Setup request for proxy
             self.project_name = project
             self._upstream += f":{project_cache['port']}"
             del kwargs['project']
             logger.debug(f"Calling {self._upstream}")
+            # Proxy the request
             return super().dispatch(request, *args, **kwargs)
         elif project_obj.status == Project.Status.INITIALIZED:
             error = {'message': 'Project not yet active.'}

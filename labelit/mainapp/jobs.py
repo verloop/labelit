@@ -1,4 +1,4 @@
-import psutil, os
+import psutil, os, logging
 
 from label_studio_converter import Converter
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -10,6 +10,7 @@ from .utils import get_random_port, save_config_file, get_label_studio_cmd, star
 from .storage.utils import get_storage_type
 from .storage.exceptions import StorageException
 
+logger = logging.getLogger(__name__)
 
 class ProjectNotRunning(Exception):
     """Project server is not running"""
@@ -33,23 +34,25 @@ def manage_project_servers():
                 project_cache = cache.get(str(project.id))
                 if not project_cache:
                     raise ProjectNotRunning("Project not found in cache!")
-                server_process = psutil.Process(project_cache['pid'])
-                server_listen_connections = [connection for connection in server_process.connections() if connection.status == psutil.CONN_LISTEN]
-                f=0
-                for connection in server_listen_connections:
-                    if connection.laddr.port == project_cache['port']:
-                        f=1
-                if f==1:
-                    print(f"Project {project.name} already running pid {project_cache['pid']} port {project_cache['port']}")
+                try:
+                    server_process = psutil.Process(project_cache['pid'])
+                except:
+                    raise ProjectNotRunning(f"Project process with PID {project_cache['pid']} not running")
+                server_listen_connections = [connection for connection in server_process.connections() \
+                                            if (connection.status == psutil.CONN_LISTEN \
+                                            and connection.laddr.port == project_cache['port'])]
+                if server_listen_connections:
+                    logger.debug(f"Project {project.name} already running pid {project_cache['pid']} port {project_cache['port']}")
                 else:
                     raise ProjectNotRunning("Project not running!")
             except ProjectNotRunning:
-                print(f"Starting project {project.name}")
+                logger.info(f"Starting project {project.name}")
                 server_port = get_random_port()
                 project_id = str(project.id)
                 try:
                     project_storage_path_type = get_storage_type(project.dataset_path)
                 except StorageException:
+                    logger.exception("Exception while fetching storage type")
                     set_project_cache(project_id, None, None, True)
                     continue
                 if project_storage_path_type == 'local':
@@ -64,7 +67,7 @@ def manage_project_servers():
                             storage_obj = GoogleStorageHandler(project='verloop-dev')
                             storage_obj.download(project.dataset_path, project_local_storage)
                     except StorageException:
-                        print("Failure while downloading dataset.")
+                        logger.exception("Failure while downloading dataset.")
                         set_project_cache(project_id, None, None, True)
                         # Go to next project
                         continue
@@ -78,7 +81,7 @@ def manage_project_servers():
                 try:
                     server_pid = start_tool_server(command)
                 except:
-                    print("Failure while starting label studio server.")
+                    logger.exception("Failure while starting label studio server.")
                     set_project_cache(project_id, None, None, True)
                     # Go to next project
                     continue
@@ -99,19 +102,17 @@ def export_projects():
     projects = Project.objects.all()
     for project in projects:
         if project.status == Project.Status.ACTIVE and project.export_format != Project.ExportFormat.NONE:
-            print(f"Exporting project {project.name}")
+            logger.info(f"Exporting project {project.name}")
             project_annotators = ProjectAnnotators.objects.filter(project=project)
-            print(project_annotators)
             for project_annotator in project_annotators:
                 annotator = project_annotator.annotator
                 annotator_dir = os.path.join(LABELIT_PROJECTS_DIR, annotator.username, project.name)
-                print(annotator_dir)
                 label_config_file = os.path.join(annotator_dir, 'config.xml')
-                print(label_config_file)
                 if os.path.exists(label_config_file):
                     c = Converter(label_config_file)
                     completions_dir = os.path.join(annotator_dir, 'completions/')
                     output_path = os.path.join(LABELIT_EXPORT_DIR, project.name, annotator.username)
+                    logger.debug(f"Exporting completions for annotator {annotator.username}, project {project.name}")
                     if project.export_format == Project.ExportFormat.JSON:
                         c.convert_to_json(completions_dir, output_path)
                     elif project.export_format == Project.ExportFormat.CSV:
@@ -121,7 +122,7 @@ def export_projects():
                     elif project.export_format == Project.ExportFormat.CONLL:
                         c.convert_to_conll2003(completions_dir, output_path)
                     else:
-                        print("Not supported format")
+                        logger.debug(f"Export format {project.export_format} not supported for project {project.name}")
 
 
 # Init scheduler

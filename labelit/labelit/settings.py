@@ -31,6 +31,10 @@ LOGGING = {
             'class': 'logging.StreamHandler',
         },
     },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
     }
 
 # Quick-start development settings - unsuitable for production
