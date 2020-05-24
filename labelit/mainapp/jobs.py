@@ -64,8 +64,13 @@ def manage_project_servers():
                     try:
                         if project_storage_path_type == 'gs':
                             from .storage.gs import GoogleStorageHandler
-                            storage_obj = GoogleStorageHandler(project='verloop-dev')
+                            storage_obj = GoogleStorageHandler()
                             storage_obj.download(project.dataset_path, project_local_storage)
+                        elif project_storage_path_type == 's3':
+                            from .storage.s3 import S3StorageHandler
+                            storage_obj = S3StorageHandler()
+                            storage_obj.download(project.dataset_path, project_local_storage)
+
                     except StorageException:
                         logger.exception("Failure while downloading dataset.")
                         set_project_cache(project_id, None, None, True)
