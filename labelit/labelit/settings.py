@@ -28,6 +28,16 @@ LABELIT_DIRS = {
 for dir_type in LABELIT_DIRS:
     LABELIT_DIRS[dir_type].mkdir(parents=True, exist_ok=True)
 
+# Labelit background job config
+LABELIT_JOB_CONFIG = {
+    'project_manager': {
+        'interval': 150,
+    },
+    'exporter': {
+        'interval': 2000,
+    },
+}
+
 # Setup logging
 LOGGING = {
     'version': 1,
