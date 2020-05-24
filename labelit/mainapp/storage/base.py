@@ -10,7 +10,7 @@ class StorageHandler():
         path_obj = Path(path)
         if not path_obj.exists():
             path_obj.mkdir(parents=True)
-        elif not path_obj.isdir():
+        elif not path_obj.is_dir():
             raise PathExistsException(f"Path {path} is a file")
 
     def download(self):
