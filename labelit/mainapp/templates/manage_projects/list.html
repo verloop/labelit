@@ -2,6 +2,7 @@
 {% load static %}
 {% block extrahead %}
 <link rel="stylesheet" href="{% static 'table.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block content %}
@@ -11,7 +12,10 @@
   			<div class="header__item"><a id="name" class="filter__link" href="#">Project</a></div>
   			<div class="header__item"><a id="wins" class="filter__link filter__link--number" href="#">Manager</a></div>
   			<div class="header__item"><a id="draws" class="filter__link filter__link--number" href="#">Task UI</a></div>
-  			<div class="header__item"><a id="losses" class="filter__link filter__link--number" href="#">Labeling UI</a></div>
+			<div class="header__item"><a id="losses" class="filter__link filter__link--number" href="#">Labeling UI</a></div>
+			{% if user.is_manager or user.is_admin %}
+			  <div class="header__item"><a id="losses" class="filter__link filter__link--number" href="#">Delete</a></div>
+			{% endif %}
   		</div>
   		<div class="table-content">
         {% for project in projects %}
@@ -19,7 +23,10 @@
   				<div class="table-data">{{ project.name }}</div>
   				<div class="table-data">{{ project.manager.username }}</div>
   				<div class="table-data"><a href="/label/{{ project.name }}/labelit-tasks">Link</a></div>
-  				<div class="table-data"><a href="/label/{{ project.name }}/labelit">Link</a></div>
+				<div class="table-data"><a href="/label/{{ project.name }}/labelit">Link</a></div>
+				{% if user.is_manager or user.is_admin %}
+					<div class="table-data"><a href="/projects/{{ project.id }}/delete"><i class="fa fa-trash-o" style="font-size:24px"></i></a></div>
+				{% endif %}
   			</div>
   		  {% endfor %}
   		</div>

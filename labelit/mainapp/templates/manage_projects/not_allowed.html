@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'login.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="container" id="auth">
+    {{ text }}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'manage_projects/create.css' %}">
+{% endblock %}
+
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+  
+    {% for field in form.visible_fields %}
+    <div class="form-group row">
+        <label for="field-label" class="col col-form-label">{{ field.label_tag }}</label>
+        <div class="col">
+            {{ field }}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+          </div>
+      </div>
+    {% endfor %}
+  
+    <button type="submit" class="btn btn-primary">Create Project</button>
+  </form>
+{% endblock %}

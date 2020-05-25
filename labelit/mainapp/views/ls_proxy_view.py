@@ -57,9 +57,3 @@ class LSProxyView(ProxyView):
         else:
             error = {'message': 'Unknown state for project.'}
             return render(request, 'error.html', {'errors' : [error]})
-
-@login_required
-def projects_list(request):
-    """List all projects"""
-    projects = Project.objects.all()
-    return render(request, 'list_projects.html', {'projects' : projects})
