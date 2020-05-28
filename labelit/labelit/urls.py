@@ -23,6 +23,7 @@ urlpatterns = [
     # Base URL's
     path('admin/', admin.site.urls),
     path('', include('django.contrib.auth.urls')),
+    path('', login_required(list_projects), name='projects_list_home'),
 
     # Label Studio API URL's
     path('api/<str:path>', login_required(LSProxyView.as_view()), {'path': ''}, name='LSAPIView'),
