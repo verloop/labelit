@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from mainapp.views import LSProxyView, create_project, list_projects, delete_view
+from mainapp.views import LSProxyView, create_project, list_projects, delete_view, add_annotator, remove_annotator
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
@@ -34,6 +34,10 @@ urlpatterns = [
     path('projects/create', login_required(create_project), name='create_project'),
     path('projects/list', login_required(list_projects), name='projects_list'),
     path('projects/<id>/delete', login_required(delete_view), name='delete_project'),
+
+    # Annotator URL's
+    path('projects/<name>/add-annotator', login_required(add_annotator), name='add_annotator'),
+    path('projects/<name>/remove-annotator', login_required(remove_annotator), name='remove_annotator'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

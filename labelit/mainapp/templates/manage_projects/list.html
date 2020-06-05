@@ -14,6 +14,8 @@
 			<div class="header__item"><a id="labellink" class="filter__link filter__link--number" href="#">Labeling UI</a></div>
 			{% if user.is_manager or user.is_admin %}
 			  <div class="header__item"><a id="delete" class="filter__link filter__link--number" href="#">Delete</a></div>
+			  <div class="header__item"><a id="add-annotator" class="filter__link filter__link--number" href="#">Add Annotator</a></div>
+			  <div class="header__item"><a id="add-annotator" class="filter__link filter__link--number" href="#">Remove Annotator</a></div>
 			{% endif %}
   		</div>
   		<div class="table-content">
@@ -25,6 +27,8 @@
 				<div class="table-data"><a href="/label/{{ project.name }}/labelit">Link</a></div>
 				{% if user.is_manager or user.is_admin %}
 					<div class="table-data"><a href="/projects/{{ project.id }}/delete"> Delete </a></div>
+					<div class="table-data"><a href="/projects/{{ project.name }}/add-annotator"> Add Annotator </a></div>
+					<div class="table-data"><a href="/projects/{{ project.name }}/remove-annotator"> Remove Annotator </a></div>
 				{% endif %}
   			</div>
   		  {% endfor %}

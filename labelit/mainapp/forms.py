@@ -19,3 +19,13 @@ class ProjectForm(forms.ModelForm):
         fields = (
             'name', 'dataset_format', 'dataset_path', 'config', 'export_format'
             )
+
+class AnnotatorSelectForm(forms.Form):
+    annotators = forms.ModelMultipleChoiceField(
+        widget = forms.CheckboxSelectMultiple,
+        queryset = User.objects.all()
+        )
+    def __init__(self, *args, **kwargs):
+        self.queryset = kwargs.pop('queryset', None)
+        super(AnnotatorSelectForm, self).__init__(*args, **kwargs)
+        self.fields['annotators'].queryset = self.queryset
