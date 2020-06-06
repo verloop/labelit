@@ -1,15 +1,21 @@
 import logging
+import urllib3
 
 from django.shortcuts import render
 from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
 from revproxy.views import ProxyView
 from mainapp.models import Project
+from mainapp.utils import ErrorMessage
+from labelit.settings import LSPROXY_CONNECTION_POOL_COUNT, LSPROXY_CONNECTION_PER_POOL
 
 logger = logging.getLogger(__name__)
 
-
 class LSProxyView(ProxyView):
+    def __init__(self, *args, **kwargs):
+        super(LSProxyView, self).__init__(*args, **kwargs)
+        self.http = urllib3.PoolManager(num_pools=LSPROXY_CONNECTION_POOL_COUNT, maxsize=LSPROXY_CONNECTION_PER_POOL)
+
     def get_request_headers(self, *args, **kwargs):
         """Override header setup function to add user, project as header"""
         # Call super to get default headers
@@ -28,16 +34,16 @@ class LSProxyView(ProxyView):
         try:
             project_obj = Project.objects.get(name=project)
         except:
-            error = {'message': 'Project not found!'}
-            return render(request, 'error.html', {'errors' : [error]})
+            error = ErrorMessage(message='Project not found!')
+            return render(request, 'error.html', {'error' : error})
         if project_obj.status == Project.Status.ACTIVE:
             project_cache = cache.get(str(project_obj.id))
             if not project_cache:
-                error = {'message': 'Project not loaded yet!'}
-                return render(request, 'error.html', {'errors' : [error]})
+                error = ErrorMessage(message='Project not loaded yet!')
+                return render(request, 'error.html', {'error' : error})
             if project_cache['fail_flag']:
-                error = {'message': 'Failure while loading project, contact admin.'}
-                return render(request, 'error.html', {'errors' : [error]})
+                error = ErrorMessage(message='Failure while loading project, contact admin.')
+                return render(request, 'error.html', {'error' : error})
             # Setup request for proxy
             self.project_name = project
             self._upstream += f":{project_cache['port']}"
@@ -46,14 +52,14 @@ class LSProxyView(ProxyView):
             # Proxy the request
             return super().dispatch(request, *args, **kwargs)
         elif project_obj.status == Project.Status.INITIALIZED:
-            error = {'message': 'Project not yet active.'}
-            return render(request, 'error.html', {'errors' : [error]})
+            error = ErrorMessage(message='Project not yet active.')
+            return render(request, 'error.html', {'error' : error})
         elif project_obj.status == Project.Status.COMPLETED:
-            error = {'message': 'Project has been marked as completed by manager.'}
-            return render(request, 'error.html', {'errors' : [error]})
+            error = ErrorMessage(message='Project has been marked as completed by manager.')
+            return render(request, 'error.html', {'error' : error})
         elif project_obj.status == Project.Status.INACTIVE:
-            error = {'message': 'Oops! Project is in inactive state.'}
-            return render(request, 'error.html', {'errors' : [error]})
+            error = ErrorMessage(message='Oops! Project is in inactive state.')
+            return render(request, 'error.html', {'error' : error})
         else:
-            error = {'message': 'Unknown state for project.'}
-            return render(request, 'error.html', {'errors' : [error]})
+            error = ErrorMessage(message='Unknown state for project.')
+            return render(request, 'error.html', {'error' : error})

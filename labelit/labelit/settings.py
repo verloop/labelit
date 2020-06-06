@@ -53,6 +53,10 @@ LOGGING = {
     },
     }
 
+# Proxy configs
+LSPROXY_CONNECTION_POOL_COUNT = 10
+LSPROXY_CONNECTION_PER_POOL = 20
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
