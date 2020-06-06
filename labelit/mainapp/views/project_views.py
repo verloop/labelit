@@ -10,6 +10,7 @@ logger.setLevel(logging.DEBUG)
 
 
 def create_project(request):
+    """View to create new project"""
     user = request.user
     if user.is_annotator:
         error = ErrorMessage(header="Access denied", message="Only admin and managers can create projects")
@@ -23,7 +24,7 @@ def create_project(request):
             return redirect('projects_list')
     else:
         form = ProjectForm()
-    return render(request, 'manage_projects/create.html', {'form': form})
+    return render(request, 'projects/create.html', {'form': form})
 
 
 def list_projects(request):
@@ -37,10 +38,11 @@ def list_projects(request):
     elif user.is_admin:
         projects = Project.objects.all()
 
-    return render(request, 'manage_projects/list.html', {'projects' : projects, 'user' : user})
+    return render(request, 'projects/list.html', {'projects' : projects, 'user' : user})
 
 
 def delete_view(request):
+    """View to delete an existing project"""
     user = request.user
     if request.method =="GET":
         id = request.GET.get('id', None)
@@ -51,7 +53,6 @@ def delete_view(request):
                 return render(request, 'error.html', {'error':error})
             project.delete()
             return redirect('projects_list')
-            #return render(request, "manage_projects/delete.html", {'project':project})
         else:
             error = ErrorMessage(header="Delete project", message="Please provide valid project ID")
             return render(request, 'error.html', {'error':error})

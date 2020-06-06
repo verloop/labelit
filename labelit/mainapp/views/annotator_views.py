@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from mainapp.models import Project, ProjectAnnotators, User
 from mainapp.forms import AnnotatorSelectForm
-from django.contrib import messages
 
 import os
 import logging
@@ -9,34 +8,38 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 def manage_annotators(request, name):
+    """View to manage annotators for projects"""
     user = request.user
     if user.is_annotator:
         error = ErrorMessage(header="Access denied", message="Only admin and managers can add/remove annotators")
         return render(request, 'error.html', {'error':error})
     else:
         project = Project.objects.get(name=name)
-        annotator_assigned = ProjectAnnotators.objects.filter(project=project).values_list('annotator', flat=True)
-        annotators_not_assigned = User.objects.filter(staff_type=User.StaffRole.ANNOTATOR).exclude(id__in=annotator_assigned)
-        annotator_assigned = User.objects.filter(staff_type=User.StaffRole.ANNOTATOR).filter(id__in=annotator_assigned)
+        annotators_assigned = ProjectAnnotators.objects.filter(project=project).values_list('annotator', flat=True)
         if request.method == "POST":
-            form = AnnotatorSelectForm(request.POST, annotator_assigned=annotator_assigned, annotators_not_assigned=annotators_not_assigned)
+            form = AnnotatorSelectForm(request.POST)
             if form.is_valid():
-                annotators_to_remove = form.cleaned_data['annotators_to_remove']
-                annotators_to_add = form.cleaned_data['annotators_to_add']
-
-                for annotator in annotators_to_remove:
-                    current_mapping = ProjectAnnotators.objects.filter(
-                        project=project, 
-                        annotator=annotator
-                    )
-                    current_mapping.delete()
-
+                annotators = form.cleaned_data['annotators']
+                annotators_ids = [annotator.id for annotator in annotators]
+                annotators_to_add = [annotator for annotator in annotators if annotator.id not in annotators_assigned]
+                annotators_to_remove_ids = set(annotators_assigned) - set(annotators_ids)
+                if annotators_to_remove_ids:
+                    annotators_to_remove = User.objects.filter(id__in=annotators_to_remove_ids)
+                    # Update mapping table
+                    for annotator in annotators_to_remove:
+                        mapping_to_remove = ProjectAnnotators.objects.filter(
+                            project = project,
+                            annotator = annotator
+                        )
+                        mapping_to_remove.delete()
 
                 for annotator in annotators_to_add:
-                    new_mapping = ProjectAnnotators(
+                    mapping_to_add = ProjectAnnotators(
                         project = project,
                         annotator = annotator
                     )
-                    new_mapping.save()
-        form = AnnotatorSelectForm(annotator_assigned=annotator_assigned, annotators_not_assigned=annotators_not_assigned)
-        return render(request, 'annotator/list_annotators.html', {'form': form})
+                    mapping_to_add.save()
+                # Show new set of annotators as initial
+                annotators_assigned = annotators_ids
+        form = AnnotatorSelectForm(initial={'annotators': annotators_assigned})
+        return render(request, 'projects/manage_annotators.html', {'form': form, 'project': project})
