@@ -1,26 +1,22 @@
 {% extends "base.html" %}
 {% load static %}
-{% block extrahead %}
-<link rel="stylesheet" href="{% static 'manage_projects/create.css' %}">
-{% endblock %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-<form method="POST">
-    {% csrf_token %}
-  
-    {% for field in form.visible_fields %}
-    <div class="form-group row">
-        <label for="field-label" class="col col-form-label">{{ field.label_tag }}</label>
-        <div class="col">
-            {{ field }}
-            {% if field.help_text %}
-                <small class="form-text text-muted">{{ field.help_text }}</small>
-            {% endif %}
-            {{ field.errors }}
-          </div>
+<div class="container mt-5">
+  <div class="page-header mb-3">
+    <h2>Create Project</h2>
+  </div>
+  <div class="row justify-content-center mb-3">
+    <div class="col-sm-8 pt-2 card bg-light">
+      <div class="col-sm-12 form-column">
+        <form method="POST">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <button type="submit" class="btn btn-success">Create Project</button>
+        </form>
       </div>
-    {% endfor %}
-  
-    <button type="submit" class="btn btn-primary">Create Project</button>
-  </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

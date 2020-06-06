@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from mainapp.models import Project, ProjectAnnotators
 from mainapp.forms import ProjectForm
+from mainapp.utils import ErrorMessage
 
 import os
 import logging
@@ -11,8 +12,8 @@ logger.setLevel(logging.DEBUG)
 def create_project(request):
     user = request.user
     if user.is_annotator:
-        text = "only admin and managers can create projects"
-        return render(request, 'manage_projects/not_allowed.html', {'text':text})
+        error = ErrorMessage(header="Access denied", message="Only admin and managers can create projects")
+        return render(request, 'error.html', {'error':error})
     if request.method == "POST":
         form = ProjectForm(request.POST)
         if form.is_valid():
@@ -39,17 +40,21 @@ def list_projects(request):
     return render(request, 'manage_projects/list.html', {'projects' : projects, 'user' : user})
 
 
-def delete_view(request, id):
+def delete_view(request):
     user = request.user
-    project = Project.objects.get(pk=id)
-    if user.is_annotator:
-        text = "only admin and managers can delete projects"
-        return render(request, 'manage_projects/not_allowed.html', {'text':text})
-
-    obj = get_object_or_404(Project, id = id) 
-
-    if request.method =="POST": 
-        obj.delete()
-        return redirect('projects_list')
-  
-    return render(request, "manage_projects/delete.html", {'project':project})
+    if request.method =="GET":
+        id = request.GET.get('id', None)
+        if id:
+            project = get_object_or_404(Project, id=id)
+            if user.is_annotator or (user.is_manager and project.manager.username != user):
+                error = ErrorMessage(header="Access denied", message="Only admin and managers can delete projects")
+                return render(request, 'error.html', {'error':error})
+            project.delete()
+            return redirect('projects_list')
+            #return render(request, "manage_projects/delete.html", {'project':project})
+        else:
+            error = ErrorMessage(header="Delete project", message="Please provide valid project ID")
+            return render(request, 'error.html', {'error':error})
+    else:
+        error = ErrorMessage(header="Method not supported", message="This request method is not supported!")
+        return render(request, 'error.html', {'error':error})

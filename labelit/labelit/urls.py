@@ -29,11 +29,11 @@ urlpatterns = [
     path('api/<str:path>', login_required(LSProxyView.as_view()), {'path': ''}, name='LSAPIView'),
     path('label/<str:project>', login_required(LSProxyView.as_view()), {'path': ''}, name='LSHomeView'),
     path('label/<str:project>/<path:path>', login_required(LSProxyView.as_view()), name='LSView'),
-    
+
     # Project Manager URL's
     path('projects/create', login_required(create_project), name='create_project'),
     path('projects/list', login_required(list_projects), name='projects_list'),
-    path('projects/<id>/delete', login_required(delete_view), name='delete_project'),
+    path('projects/delete', login_required(delete_view), name='delete_project'),
 
     # Annotator URL's
     path('projects/<name>/add-annotator', login_required(add_annotator), name='add_annotator'),

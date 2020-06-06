@@ -1,38 +1,83 @@
 {% extends "base.html" %}
 {% load static %}
-{% block extrahead %}
-<link rel="stylesheet" href="{% static 'table.css' %}">
-{% endblock %}
 
 {% block content %}
-  <div class="container">
-  	<div class="table">
-  		<div class="table-header">
-  			<div class="header__item"><a id="name" class="filter__link" href="#">Project</a></div>
-  			<div class="header__item"><a id="manager" class="filter__link filter__link--number" href="#">Manager</a></div>
-  			<div class="header__item"><a id="tasklink" class="filter__link filter__link--number" href="#">Task UI</a></div>
-			<div class="header__item"><a id="labellink" class="filter__link filter__link--number" href="#">Labeling UI</a></div>
-			{% if user.is_manager or user.is_admin %}
-			  <div class="header__item"><a id="delete" class="filter__link filter__link--number" href="#">Delete</a></div>
-			  <div class="header__item"><a id="add-annotator" class="filter__link filter__link--number" href="#">Add Annotator</a></div>
-			  <div class="header__item"><a id="add-annotator" class="filter__link filter__link--number" href="#">Remove Annotator</a></div>
-			{% endif %}
-  		</div>
-  		<div class="table-content">
-        {% for project in projects %}
-  			<div class="table-row">
-  				<div class="table-data">{{ project.name }}</div>
-  				<div class="table-data">{{ project.manager.username }}</div>
-  				<div class="table-data"><a href="/label/{{ project.name }}/labelit-tasks">Link</a></div>
-				<div class="table-data"><a href="/label/{{ project.name }}/labelit">Link</a></div>
-				{% if user.is_manager or user.is_admin %}
-					<div class="table-data"><a href="/projects/{{ project.id }}/delete"> Delete </a></div>
-					<div class="table-data"><a href="/projects/{{ project.name }}/add-annotator"> Add Annotator </a></div>
-					<div class="table-data"><a href="/projects/{{ project.name }}/remove-annotator"> Remove Annotator </a></div>
-				{% endif %}
-  			</div>
-  		  {% endfor %}
-  		</div>
-  	</div>
+  <div class="modal fade" id="deleteprojectModal" tabindex="-1" role="dialog" aria-labelledby="deleteprojectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteprojectModalLabel">Delete Project</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="deleteProjectForm" name="delete-project-form" action="" method="POST">
+            {% csrf_token %}
+            <p>You are going to delete the project. Are you sure?</p>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <div class="container mt-5">
+    <div class="page-header mb-3">
+      <h2>Projects</h2>
+    </div>
+    <table class="table table-bordered table-hover text-center">
+      <thead>
+        <tr>
+          <th scope="col">Project</th>
+          <th scope="col">Manager</th>
+          {% if user.is_annotator %}
+          <th scope="col">Task UI</th>
+          <th scope="col">Labeling UI</th>
+          {% endif %}
+          {% if user.is_manager or user.is_admin %}
+          <th scope="col">Add Annotators</th>
+          <th scope="col">Remove Annotators</th>
+          <th scope="col">Delete</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for project in projects %}
+        <tr>
+          <th scope="row">{{ project.name }}</th>
+          <td>{{ project.manager.username }}</td>
+          {% if user.is_annotator %}
+          <td><a href="/label/{{ project.name }}/labelit-tasks">Link</a></td>
+          <td><a href="/label/{{ project.name }}/labelit">Link</a></td>
+          {% endif %}
+          {% if user.is_manager or user.is_admin %}
+          <td><a href="/projects/{{ project.name }}/add-annotator" class="btn btn-outline-success" role="button">Add Annotator</a></td>
+          <td><a href="/projects/{{ project.name }}/remove-annotator" class="btn btn-outline-secondary" role="button">Remove Annotator</a></td>
+          <td><button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteprojectModal" data-project-name="{{ project.name }}" data-project-id="{{ project.id }}">Delete</button>
+</td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+{% endblock %}
+
+
+{% block bottomscript %}
+<script type="text/javascript">
+  $('#deleteprojectModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget)
+    var project_id = button.data('project-id')
+    var project_name = button.data('project-name')
+    var modal = $(this)
+    var form_url = "{% url 'delete_project' %}" + "?id=" + project_id
+    modal.find('#deleteProjectForm').attr('action', form_url)
+  })
+</script>
 {% endblock %}

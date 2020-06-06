@@ -1,10 +1,41 @@
 {% extends "base.html" %}
 {% load static %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'error.css' %}">
+{% endblock %}
 
 {% block content %}
-  {% for error in errors %}
-  <div class="container">
-    <div>{{error.message}}</div>
-  </div>
-  {% endfor %}
+    <div class="error-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 ">
+                    <div class="error-text">
+                        <h2 class="error">{{ error.header }}</h2>
+                        <div class="im-sheep">
+                            <div class="top">
+                                <div class="body"></div>
+                                <div class="head">
+                                    <div class="im-eye one"></div>
+                                    <div class="im-eye two"></div>
+                                    <div class="im-ear one"></div>
+                                    <div class="im-ear two"></div>
+                                </div>
+                            </div>
+                            <div class="im-legs">
+                                <div class="im-leg"></div>
+                                <div class="im-leg"></div>
+                                <div class="im-leg"></div>
+                                <div class="im-leg"></div>
+                            </div>
+                        </div>
+                        <h4>{{ error.message }}</h4>
+                        <p>{{ error.description }}</p>
+                        <!--
+                        <a href="{% url 'projects_list' %}" class="btn btn-primary btn-round">List Projects</a>
+                        -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -3,3 +3,9 @@
   padding-right:30px;
   place-items: horizontal;
 }
+
+.page-header {
+  text-align: center;
+  font-weight: 100;
+  font-family: sans-serif;
+}

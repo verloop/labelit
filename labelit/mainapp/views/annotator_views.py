@@ -12,8 +12,8 @@ logger.setLevel(logging.DEBUG)
 def add_annotator(request, name):
     user = request.user
     if user.is_annotator:
-        text = "only admin and managers can add annotators"
-        return render(request, 'manage_projects/not_allowed.html', {'text':text})
+        error = ErrorMessage(header="Access denied", message="Only admin and managers can add annotators")
+        return render(request, 'error.html', {'error':error})
     else:
         project = Project.objects.get(name=name)
         # print(project)
@@ -22,7 +22,7 @@ def add_annotator(request, name):
         if request.method == "POST":
             form = AnnotatorSelectForm(request.POST, queryset=annotators_not_assigned)
             if form.is_valid():
-                selected_annotators = form.cleaned_data['annotators'] 
+                selected_annotators = form.cleaned_data['annotators']
                 for annotator in selected_annotators:
                     new_mapping = ProjectAnnotators(
                         project = project,
@@ -35,8 +35,8 @@ def add_annotator(request, name):
 def remove_annotator(request, name):
     user = request.user
     if user.is_annotator:
-        text = "only admin and managers can remove annotators"
-        return render(request, 'manage_projects/not_allowed.html', {'text':text})
+        error = ErrorMessage(header="Access denied", message="Only admin and managers can remove annotators")
+        return render(request, 'error.html', {'error':error})
     else:
         project = Project.objects.get(name=name)
         annotator_assigned = ProjectAnnotators.objects.filter(project=project).values_list('annotator', flat=True)
@@ -44,7 +44,7 @@ def remove_annotator(request, name):
         if request.method == "POST":
             form = AnnotatorSelectForm(request.POST, queryset=annotator_assigned)
             if form.is_valid():
-                selected_annotators = form.cleaned_data['annotators'] 
+                selected_annotators = form.cleaned_data['annotators']
                 for annotator in selected_annotators:
                     current_mapping = ProjectAnnotators.objects.filter(project=project, annotator=annotator)
                     current_mapping.delete()
