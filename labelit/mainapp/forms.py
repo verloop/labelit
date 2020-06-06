@@ -21,11 +21,19 @@ class ProjectForm(forms.ModelForm):
             )
 
 class AnnotatorSelectForm(forms.Form):
-    annotators = forms.ModelMultipleChoiceField(
+    annotators_to_remove = forms.ModelMultipleChoiceField(
         widget = forms.CheckboxSelectMultiple,
-        queryset = User.objects.all()
+        queryset = User.objects.all(),
+        required=False
+        )
+    annotators_to_add = forms.ModelMultipleChoiceField(
+        widget = forms.CheckboxSelectMultiple,
+        queryset = User.objects.all(),
+        required=False
         )
     def __init__(self, *args, **kwargs):
-        self.queryset = kwargs.pop('queryset', None)
+        self.annotator_assigned = kwargs.pop('annotator_assigned', None)
+        self.annotators_not_assigned = kwargs.pop('annotators_not_assigned', None)
         super(AnnotatorSelectForm, self).__init__(*args, **kwargs)
-        self.fields['annotators'].queryset = self.queryset
+        self.fields['annotators_to_remove'].queryset = self.annotator_assigned
+        self.fields['annotators_to_add'].queryset = self.annotators_not_assigned

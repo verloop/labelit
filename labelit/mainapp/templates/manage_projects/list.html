@@ -39,8 +39,7 @@
           <th scope="col">Labeling UI</th>
           {% endif %}
           {% if user.is_manager or user.is_admin %}
-          <th scope="col">Add Annotators</th>
-          <th scope="col">Remove Annotators</th>
+          <th scope="col">Manage Annotators</th>
           <th scope="col">Delete</th>
           {% endif %}
         </tr>
@@ -55,8 +54,7 @@
           <td><a href="/label/{{ project.name }}/labelit">Link</a></td>
           {% endif %}
           {% if user.is_manager or user.is_admin %}
-          <td><a href="/projects/{{ project.name }}/add-annotator" class="btn btn-outline-success" role="button">Add Annotator</a></td>
-          <td><a href="/projects/{{ project.name }}/remove-annotator" class="btn btn-outline-secondary" role="button">Remove Annotator</a></td>
+          <td><a href="/projects/{{ project.name }}/manage-annotators" class="btn btn-outline-secondary" role="button">Manage Annotator</a></td>
           <td><button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteprojectModal" data-project-name="{{ project.name }}" data-project-id="{{ project.id }}">Delete</button>
 </td>
           {% endif %}
