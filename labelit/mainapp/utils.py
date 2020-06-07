@@ -4,6 +4,14 @@ import time
 
 from labelit.settings import BASE_DIR_PATH, LABELIT_DIRS
 
+
+class ErrorMessage():
+    """Base class for labelit error messages"""
+    def __init__(self, header="Error", message="Error occured", description=""):
+        self.header = header
+        self.message = message
+        self.description = description
+
 def get_random_port():
     """Gets random available port"""
     with socket() as s:

@@ -3,3 +3,4 @@ django-revproxy==0.10.0
 label-studio==0.6.0
 apscheduler==3.6.3
 psutil==5.7.0
+django-crispy-forms=1.9.1
