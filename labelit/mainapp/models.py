@@ -1,48 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from labelit.settings import BASE_DIR
-from label_studio.utils.misc import parse_config
-import os
-from pathlib import Path
-
-from .storage.utils import get_storage_type
-
-
-# gs_regex = r"gs:\/\/(([a-zA-Z0-9_+.-]+)(\/))+([a-zA-Z0-9_+.-]+)"
-
-def validate_dataset_path(value):
-    """Validates the path for input dataset"""
-    try:
-        storage_type = get_storage_type(value)
-        if storage_type == 'local':
-            dataset_path = Path(value)
-            if not dataset_path.is_dir():
-                raise Exception("Directory doesn't exist")
-    except:
-        raise ValidationError(
-            _('Enter a valid storage path!'),
-            code='invalid'
-        )
-
-def validate_label_config(config):
-    """Validates the label studio config"""
-    try:
-        parsed_config = parse_config(config)
-    except:
-        raise ValidationError(
-            _('Invalid Label Studio config'),
-            code='invalid'
-        )
+from mainapp.validators import validate_dataset_path, validate_label_config
 
 class User(AbstractUser):
     class StaffRole(models.IntegerChoices):
         ANNOTATOR = 1, _("Annotator")
         MANAGER = 2, _("Manager")
         ADMIN = 3, _("Admin")
-  
+
     staff_type = models.IntegerField(choices=StaffRole.choices,default=StaffRole.ADMIN, verbose_name="Staff Role Level")
 
     @property
