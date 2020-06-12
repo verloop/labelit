@@ -38,6 +38,9 @@ def list_projects(request):
     elif user.is_admin:
         projects = Project.objects.all()
 
+    if not projects:
+        error = ErrorMessage(header="Projects", message="No project found!")
+        return render(request, 'error.html', {'error':error})
     return render(request, 'projects/list.html', {'projects' : projects, 'user' : user})
 
 
