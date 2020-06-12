@@ -44,8 +44,8 @@ def list_projects(request):
 def delete_view(request):
     """View to delete an existing project"""
     user = request.user
-    if request.method =="GET":
-        id = request.GET.get('id', None)
+    if request.method =="POST":
+        id = request.POST.get('id', None)
         if id:
             project = get_object_or_404(Project, id=id)
             if user.is_annotator or (user.is_manager and project.manager.username != user):
