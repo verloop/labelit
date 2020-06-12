@@ -1,10 +1,11 @@
 import psutil, logging
+from shutil import rmtree
 
 from label_studio_converter import Converter
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from django.core.cache import cache
-from labelit.settings import LABELIT_DIRS
+from labelit.settings import LABELIT_DIRS, LABELIT_REMOTE_STORAGE_CONFIG
 from .models import Project, ProjectAnnotators
 from .utils import get_random_port, save_config_file, get_label_studio_cmd, start_tool_server
 from .storage.utils import get_storage_type
@@ -20,14 +21,15 @@ def set_project_cache(project_id, server_pid, server_port, fail_flag):
     cache.set(project_id, project_cache, None)
 
 # Define jobs
-def manage_project_servers():
+def manage_project_servers(projects=None):
     """Manages Label studio servers for all projects
     Checks status of projects and starts label studio server if it's not running already.
     Sets project cache with server PID and port along with failure flag to mark failures
     while starting servers.
     """
-    # Get all projects
-    projects = Project.objects.all()
+    if not projects:
+        # Get all projects
+        projects = Project.objects.all()
     for project in projects:
         if project.status in [Project.Status.INITIALIZED, Project.Status.ACTIVE]:
             try:
@@ -45,7 +47,8 @@ def manage_project_servers():
                     logger.debug(f"Project {project.name} already running pid {project_cache['pid']} port {project_cache['port']}")
                 else:
                     raise ProjectNotRunning("Project not running!")
-            except ProjectNotRunning:
+            except ProjectNotRunning as e:
+                logger.info(e)
                 logger.info(f"Starting project {project.name}")
                 server_port = get_random_port()
                 project_id = str(project.id)
@@ -64,11 +67,13 @@ def manage_project_servers():
                     try:
                         if project_storage_path_type == 'gs':
                             from .storage.gs import GoogleStorageHandler
-                            storage_obj = GoogleStorageHandler()
+                            gs_project = LABELIT_REMOTE_STORAGE_CONFIG['gs']['project']
+                            storage_obj = GoogleStorageHandler(project=gs_project)
                             storage_obj.download(project.dataset_path, project_local_storage)
                         elif project_storage_path_type == 's3':
                             from .storage.s3 import S3StorageHandler
-                            storage_obj = S3StorageHandler()
+                            s3_region = LABELIT_REMOTE_STORAGE_CONFIG['s3']['region']
+                            storage_obj = S3StorageHandler(region=s3_region)
                             storage_obj.download(project.dataset_path, project_local_storage)
 
                     except StorageException:
@@ -96,7 +101,7 @@ def manage_project_servers():
                     project.save()
 
                 set_project_cache(project_id, server_pid, server_port, False)
-
+                logger.info(f"Server cache set for project {project_id}")
         elif project.status == Project.Status.COMPLETED:
             ## Do something
             pass
@@ -108,6 +113,7 @@ def export_projects():
     for project in projects:
         if project.status == Project.Status.ACTIVE and project.export_format != Project.ExportFormat.NONE:
             logger.info(f"Exporting project {project.name}")
+            output_paths = []
             project_annotators = ProjectAnnotators.objects.filter(project=project)
             for project_annotator in project_annotators:
                 annotator = project_annotator.annotator
@@ -128,7 +134,55 @@ def export_projects():
                         c.convert_to_conll2003(completions_dir, output_path)
                     else:
                         logger.debug(f"Export format {project.export_format} not supported for project {project.name}")
+                        continue
+                    output_paths.append(output_path)
 
+def stop_project_servers(projects=None):
+    """Stops running Label studio servers"""
+    if not projects:
+        projects = Project.objects.all()
+    for project in projects:
+        try:
+            project_cache = cache.get(str(project.id))
+            if not project_cache:
+                raise ProjectNotRunning("Project not found in cache!")
+            try:
+                server_process = psutil.Process(project_cache['pid'])
+            except:
+                raise ProjectNotRunning("Project process with PID")
+            # Terminate server process
+            server_process.terminate()
+        except ProjectNotRunning as e:
+            logger.error(e)
+            pass
+
+def delete_project_data(project=None):
+    """Deletes a given project including stored data"""
+    logger.info(f"Stopping server and deleting data for project {project.name} with ID {project.id}")
+    # Stop project server
+    try:
+        stop_project_servers([project])
+    except Exception as e:
+        logger.error(e)
+        # Exception while stopping project server, pass for now.
+        pass
+    try:
+        # Delete project data of annotators
+        project_data_dir = LABELIT_DIRS['projects']
+        for annotator_dir in project_data_dir.glob('*'):
+            if annotator_dir.is_dir():
+                annotator_project_dir = annotator_dir / project.name
+                if annotator_project_dir.exists():
+                    rmtree(annotator_project_dir)
+        # Delete exported data
+        project_export_dir = LABELIT_DIRS['exports'] / project.name
+        if project_export_dir.exists():
+            rmtree(project_export_dir)
+    except Exception as e:
+        logger.error(e)
+        # Exception while deleting directories, handle cases in future release
+        pass
+    logger.info(f"Deleted project {project.name} with ID {project.id}")
 
 # Init scheduler
 scheduler = BackgroundScheduler()
