@@ -55,7 +55,8 @@
           <td><a href="/label/{{ project.name }}/labelit">Link</a></td>
           {% endif %}
           {% if user.is_manager or user.is_admin %}
-          <td><a href="/projects/{{ project.name }}/manage-annotators" class="btn btn-outline-secondary" role="button">Manage Annotator</a></td>
+          <td><a href="{% url 'manage_annotators' name=project.name %}" class="btn btn-outline-secondary" role="button">Manage Annotator</a></td>
+          <td><a href="{% url 'edit_project' id=project.id %}" class="btn btn-outline-secondary" role="button">Edit Project</a></td>
           <td><button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteprojectModal" data-project-name="{{ project.name }}" data-project-id="{{ project.id }}">Delete</button>
 </td>
           {% endif %}
