@@ -31,7 +31,7 @@ for dir_type in LABELIT_DIRS:
 # Labelit background job config
 LABELIT_JOB_CONFIG = {
     'project_manager': {
-        'interval': 150,
+        'interval': 600,
     },
     'exporter': {
         'interval': 2000,
@@ -56,6 +56,16 @@ LOGGING = {
 # Proxy configs
 LSPROXY_CONNECTION_POOL_COUNT = 10
 LSPROXY_CONNECTION_PER_POOL = 20
+
+# Remote storage configs
+LABELIT_REMOTE_STORAGE_CONFIG = {
+    's3': {
+        'region': None,
+    },
+    'gs': {
+        'project': None,
+    },
+}
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
