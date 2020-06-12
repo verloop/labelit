@@ -19,3 +19,5 @@ class MainappConfig(AppConfig):
         scheduler.add_job(export_projects, 'interval', seconds=LABELIT_JOB_CONFIG['exporter']['interval'])
         # Start scheduler
         scheduler.start()
+        # Import signals
+        import mainapp.signals
