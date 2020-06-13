@@ -71,15 +71,15 @@ We have right now added plugins for the following storage :
 - AWS S3
 - Google storage
 
-Since this is optional, Labelit by default doesn't install the packages needed for accessing data from these storages. You can install these easily using below steps:
-For AWS S3 support : `pip install boto3`
-For Google storage support : `pip install google-cloud-storage`
+Since this is optional, Labelit by default doesn't install the packages needed for accessing data from these storages. You can install these easily using below steps:  
+For AWS S3 support : `pip install boto3`  
+For Google storage support : `pip install google-cloud-storage`  
 
 And that's it! Labelit automatically detects the storage type when you give it while creating project, just make sure you use the right prefix (eg. `s3://` for AWS s3 storage).
 Currently, Labelit only supports downloading dataset from remote storage. This is performed <b>only one time</b> after project is created. So, in case the data in remote storage is modified later, it won't reflect here.
 We will be adding support for remote upload soon to automatically upload labelled data to remote storage.
 
-### Adding other remote storage
+### Using other remote storages
 If you are using any other remote storage type, you can easily write a plugin. Check our `Storage` module for this. Once plugin is created, you need to modify `Jobs` module for using it.
 
 ## Deploying to Production
