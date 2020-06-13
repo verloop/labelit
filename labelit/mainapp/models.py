@@ -1,48 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from labelit.settings import BASE_DIR
-from label_studio.utils.misc import parse_config
-import os
-from pathlib import Path
-
-from .storage.utils import get_storage_type
-
-
-# gs_regex = r"gs:\/\/(([a-zA-Z0-9_+.-]+)(\/))+([a-zA-Z0-9_+.-]+)"
-
-def validate_dataset_path(value):
-    """Validates the path for input dataset"""
-    try:
-        storage_type = get_storage_type(value)
-        if storage_type == 'local':
-            dataset_path = Path(value)
-            if not dataset_path.is_dir():
-                raise Exception("Directory doesn't exist")
-    except:
-        raise ValidationError(
-            _('Enter a valid storage path!'),
-            code='invalid'
-        )
-
-def validate_label_config(config):
-    """Validates the label studio config"""
-    try:
-        parsed_config = parse_config(config)
-    except:
-        raise ValidationError(
-            _('Invalid Label Studio config'),
-            code='invalid'
-        )
+from mainapp.validators import validate_dataset_path, validate_label_config
 
 class User(AbstractUser):
     class StaffRole(models.IntegerChoices):
         ANNOTATOR = 1, _("Annotator")
         MANAGER = 2, _("Manager")
         ADMIN = 3, _("Admin")
-  
+
     staff_type = models.IntegerField(choices=StaffRole.choices,default=StaffRole.ADMIN, verbose_name="Staff Role Level")
 
     @property
@@ -91,7 +58,7 @@ class Project(models.Model):
     # storage path to dataset
     dataset_path = models.CharField(validators=[validate_dataset_path], max_length=500, help_text="Path where dataset is stored", verbose_name="Dataset Path")
     # xml config
-    config = models.TextField(validators=[validate_label_config], help_text="Label studio config", verbose_name="Label Studio XML")
+    config = models.TextField(validators=[validate_label_config], help_text="Label studio config, you can find templates and test the config <a target='_blank' rel='noopener noreferrer' href='https://labelstud.io/playground/'>here</a>", verbose_name="Label Studio XML")
     # Manager
     manager = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, help_text="Manager of this project")
     # Project status

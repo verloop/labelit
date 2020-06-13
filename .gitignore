@@ -132,7 +132,7 @@ dmypy.json
 .vscode
 
 # Test Files -
-data/
-projects/
-tmp/
-config/
+/labelit/config/
+/labelit/projects/
+/labelit/tmp/
+/labelit/exports/
