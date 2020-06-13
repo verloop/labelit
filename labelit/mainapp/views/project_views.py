@@ -70,7 +70,7 @@ def delete_view(request):
         id = request.POST.get('id', None)
         if id:
             project = get_object_or_404(Project, id=id)
-            if user.is_annotator or (user.is_manager and project.manager.username != user):
+            if user.is_annotator or (user.is_manager and project.manager.username != user.username):
                 error = ErrorMessage(header="Access denied", message="Only admin and managers can delete projects")
                 return render(request, 'error.html', {'error':error})
             project.delete()

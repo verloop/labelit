@@ -101,7 +101,7 @@ def manage_project_servers(projects=None):
                     project.save()
 
                 set_project_cache(project_id, server_pid, server_port, False)
-                logger.info(f"Server cache set for project {project_id}")
+                logger.debug(f"Server cache set for project {project_id}")
         elif project.status == Project.Status.COMPLETED:
             ## Do something
             pass
