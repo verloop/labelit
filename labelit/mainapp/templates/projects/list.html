@@ -52,8 +52,8 @@
           <th scope="row">{{ project.name }}</th>
           <td>{{ project.manager.username }}</td>
           {% if user.is_annotator %}
-          <td><a href="/label/{{ project.name }}/labelit-tasks" class="btn btn-outline-secondary" role="button">Link</a></td>
-          <td><a href="/label/{{ project.name }}/labelit" class="btn btn-outline-secondary" role="button">Link</a></td>
+          <td><a target="_blank" rel="noopener noreferrer" href="{% url 'LSView' project=project.name path='labelit-tasks' %}" class="btn btn-outline-secondary" role="button">View Tasks</a></td>
+          <td><a target="_blank" rel="noopener noreferrer" href="{% url 'LSView' project=project.name path='labelit' %}" class="btn btn-outline-secondary" role="button">Start Labelling</a></td>
           {% endif %}
           {% if user.is_manager or user.is_admin %}
           <td><a href="{% url 'manage_annotators' name=project.name %}" class="btn btn-outline-secondary" role="button">Manage Annotator</a></td>
