@@ -58,7 +58,7 @@ class Project(models.Model):
     # storage path to dataset
     dataset_path = models.CharField(validators=[validate_dataset_path], max_length=500, help_text="Path where dataset is stored", verbose_name="Dataset Path")
     # xml config
-    config = models.TextField(validators=[validate_label_config], help_text="Label studio config", verbose_name="Label Studio XML")
+    config = models.TextField(validators=[validate_label_config], help_text="Label studio config, you can find templates and test the config <a target='_blank' rel='noopener noreferrer' href='https://labelstud.io/playground/'>here</a>", verbose_name="Label Studio XML")
     # Manager
     manager = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, help_text="Manager of this project")
     # Project status
