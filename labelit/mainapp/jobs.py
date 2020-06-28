@@ -113,16 +113,16 @@ def export_projects():
     for project in projects:
         storage_type = None
         if not project.remote_export=="None":
+            # Declare a storage object which will be used to upload files later
             storage_type = get_storage_type(project.remote_export)
             if storage_type == "gs":
                 from .storage.gs import GoogleStorageHandler
                 gs_project = LABELIT_REMOTE_STORAGE_UPLOAD_CONFIG['gs']['project']
                 storage_obj =  GoogleStorageHandler(project = gs_project)
-            # elif storage_type == "s3":
-            #     from .storage.s3 import S3StorageHandler
-            #     s3_region = LABELIT_REMOTE_STORAGE_UPLOAD_CONFIG['s3']['region']
-            #     storage_obj = S3StorageHandler(region=s3_region)
-            #     storage_obj.download(project.dataset_path, project_local_storage)
+            elif storage_type == "s3":
+                from .storage.s3 import S3StorageHandler
+                s3_region = LABELIT_REMOTE_STORAGE_UPLOAD_CONFIG['s3']['region']
+                storage_obj = S3StorageHandler(region=s3_region)
 
         if project.status == Project.Status.ACTIVE and project.export_format != Project.ExportFormat.NONE:
             logger.info(f"Exporting project {project.name}")
@@ -148,8 +148,11 @@ def export_projects():
                     else:
                         logger.debug(f"Export format {project.export_format} not supported for project {project.name}")
                         continue
-                    output_paths.append(output_path)        
-                    if storage_type == 'gs':
+                    output_paths.append(output_path)
+                    # Both GS and S3 util have the same upload function which take the same set of parameters to
+                    # upload a file to the bucket.
+                    # The above declared `storage_obj` is used to upload.    
+                    if storage_type:
                         file_to_upload = list(x for x in output_path.iterdir() if x.is_file())[0]
                         storage_path = f"{project.name}/{annotator.username}/{str(file_to_upload).split('/')[-1]}"
                         storage_obj.upload(project.remote_export, storage_path, file_to_upload)

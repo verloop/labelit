@@ -30,3 +30,11 @@ class S3StorageHandler(StorageHandler):
             cleaned_object_name = object['Key'].replace('/', '_')
             destination_file_name = os.path.join(download_path, cleaned_object_name)
             self.storage_client.download_file(bucket_name, object['Key'], destination_file_name)
+
+    def upload(self, bucket_address, bucket_path_of_file, file_to_upload):
+        bucket_name, source_blob_path = split_bucket_path(bucket_address)
+        if len(source_blob_path) > 0:
+            if not source_blob_path.endswith("/"):
+                source_blob_path += "/"
+            bucket_path_of_file = source_blob_path + bucket_path_of_file
+        self.storage_client.upload_file(file_to_upload, bucket_name, bucket_path_of_file)
