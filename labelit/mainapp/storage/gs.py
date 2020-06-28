@@ -1,6 +1,8 @@
 import os
 from .base import StorageHandler
 from .utils import split_bucket_path
+from labelit.settings import LABELIT_DIRS
+from pathlib import Path
 
 try:
     from google.cloud import storage
@@ -26,3 +28,13 @@ class GoogleStorageHandler(StorageHandler):
             cleaned_blob_name = blob.name.replace('/', '_')
             destination_file_name = os.path.join(download_path, cleaned_blob_name)
             blob.download_to_filename(destination_file_name)
+
+    def upload(self, bucket_address, bucket_path_of_file, file_to_upload):
+        bucket_name, source_blob_path = split_bucket_path(bucket_address)
+        if len(source_blob_path) > 0:
+            if not source_blob_path.endswith("/"):
+                source_blob_path += "/"
+            bucket_path_of_file = source_blob_path + bucket_path_of_file
+        bucket = self.storage_client.bucket(bucket_name)
+        blob = bucket.blob(bucket_path_of_file)
+        blob.upload_from_filename(file_to_upload)

@@ -58,12 +58,21 @@ LSPROXY_CONNECTION_POOL_COUNT = 10
 LSPROXY_CONNECTION_PER_POOL = 20
 
 # Remote storage configs
-LABELIT_REMOTE_STORAGE_CONFIG = {
+LABELIT_REMOTE_STORAGE_DOWNLOAD_CONFIG = {
     's3': {
         'region': None,
     },
     'gs': {
         'project': None,
+    },
+}
+
+LABELIT_REMOTE_STORAGE_UPLOAD_CONFIG = {
+    's3': {
+        'region': None,
+    },
+    'gs': {
+        'project': "mach-learn",
     },
 }
 
