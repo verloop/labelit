@@ -72,7 +72,7 @@ LABELIT_REMOTE_STORAGE_UPLOAD_CONFIG = {
         'region': None,
     },
     'gs': {
-        'project': "mach-learn",
+        'project': None,
     },
 }
 
