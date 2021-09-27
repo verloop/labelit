@@ -19,7 +19,7 @@ Labelit creates a [Label Studio](https://labelstud.io/) server for each project 
 4. Switch to conda env (recommended) : `conda activate label-studio`
 5. Install requirements for Labelit : `pip install -r requirements.txt`
 6. Enter Django app directory : `cd labelit`
-7. Set secret key for Django as Environment variable (You can generate secret key using https://gist.github.com/ndarville/3452907 or https://djecrety.ir): `export DJANGO_SECRET_KEY="<generated_key>"`
+7. Set secret key for Django as Environment variable (You can generate secret key using https://gist.github.com/ndarville/3452907 or https://djecrety.ir): `export DJANGO_SECRET_KEY='<generated_key>'`
 8. Perform database migration (By default, it uses local SQLite database. If you want to connect to another database, check Django documentation) : `python manage.py migrate`
 9. Create admin user : `python manage.py createsuperuser`
 10. Run the server using gunicorn : `gunicorn --worker-class=gevent --worker-connections=500 --workers=1 -b '0.0.0.0:8000' labelit.wsgi`
