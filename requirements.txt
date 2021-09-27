@@ -1,4 +1,4 @@
-django==3.0.7
+django==3.1.13
 django-revproxy==0.10.0
 label-studio==0.6.0
 apscheduler==3.7.0
