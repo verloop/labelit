@@ -1,4 +1,4 @@
-# Labelit
+# Labelit [![](https://img.shields.io/badge/ML_Graveyard-RIP_Label_it-lightgrey)](https://github.com/verloop/ML-Graveyard/blob/master/README.md#labelit)
 ### Data labelling platform for small teams
 ## Description
 Labelit is a data labelling platform based on open source tool [Label Studio](https://labelstud.io/). We want to help small teams (having 3 to 5 annotators) who use [Label Studio](https://labelstud.io/) to manage multiple projects.
