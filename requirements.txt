@@ -1,6 +1,6 @@
 django==3.0.7
 django-revproxy==0.10.0
-label-studio==0.6.0
+label-studio==1.6.0
 apscheduler==3.7.0
 psutil==5.7.0
 django-crispy-forms==1.9.1
