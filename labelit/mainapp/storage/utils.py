@@ -1,5 +1,5 @@
 from .config import storage_prefex_config
-from .exceptions import StorageNotSupported
+from .exceptions import StorageNotSupported, InvalidStoragePath
 
 def get_storage_type(storage_path):
     """Get storage type for a storage path (local and supported remote storages)"""

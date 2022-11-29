@@ -19,17 +19,17 @@ class ProjectCreateForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = (
-            'name', 'dataset_format', 'dataset_path', 'config', 'export_format'
+            'name', 'dataset_format', 'dataset_path', 'config', 'export_format', "remote_export"
             )
 
 
 class ProjectEditForm(forms.ModelForm):
-    editable_fields = ('status', 'export_format',)
+    editable_fields = ('status', 'export_format')
     status_choice_values = [Project.Status.ACTIVE.value, Project.Status.DISABLED.value]
     class Meta:
         model = Project
         fields = (
-            'name', 'dataset_format', 'dataset_path', 'config', 'status', 'export_format'
+            'name', 'dataset_format', 'dataset_path', 'config', 'status', 'export_format', 'remote_export'
             )
 
     def __init__(self, *args, **kwargs):

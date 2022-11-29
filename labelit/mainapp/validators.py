@@ -28,3 +28,14 @@ def validate_label_config(config):
             _('Invalid Label Studio config'),
             code='invalid'
         )
+
+def validate_remote_path(value):
+    try:
+        storage_type = get_storage_type(value)
+        if storage_type == 'local':
+            raise Exception("Please enter valid GCP or AWS Format")
+    except:
+        raise ValidationError(
+            _('Enter a valid storage path!'),
+            code='invalid'
+        )

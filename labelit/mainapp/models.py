@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
-from mainapp.validators import validate_dataset_path, validate_label_config
+from mainapp.validators import validate_dataset_path, validate_label_config, validate_remote_path
 
 class User(AbstractUser):
     class StaffRole(models.IntegerChoices):
@@ -65,6 +65,8 @@ class Project(models.Model):
     status = models.IntegerField(choices=Status.choices, default=Status.INITIALIZED, help_text="Status of project")
     # Export format
     export_format = models.IntegerField(choices=ExportFormat.choices, default=ExportFormat.NONE, help_text="Export format for labelled data", verbose_name="Export Format")
+    # Remote Export Path
+    remote_export = models.CharField(validators=[validate_remote_path], default="None", max_length=500, help_text="Remote export path (GS or S3)", verbose_name="Remote Storage")
 
 
 class ProjectAnnotators(models.Model):
